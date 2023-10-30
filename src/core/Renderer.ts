@@ -50,6 +50,23 @@ export default class Renderer {
     this.ctx.fillRect(this.origin.x, this.origin.y, mapVertices[2].x, mapVertices[2].y);
   }
 
+  renderLight(x: number, y: number, radius: number, fromColor: string, toColor: string, angle: number) {
+    const radialGradient: CanvasGradient = this.ctx.createRadialGradient(x, y, 0, x, y, Math.abs(radius));
+    radialGradient.addColorStop(0, fromColor);
+    radialGradient.addColorStop(1, toColor); // Opacity 0
+    this.ctx.fillStyle = radialGradient;
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + radius, y);
+    this.ctx.lineTo(x + radius, y + radius * (angle < 0 ? -1 : 1));
+    this.ctx.lineTo(x + radius * Math.cos(angle), y + radius * (angle < 0 ? -1 : 1));
+    this.ctx.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+    this.ctx.lineTo(x, y);
+
+    this.ctx.fill();
+  }
+
   renderBus(bus: Bus) {
     if (!bus.textureImage) return;
 
@@ -62,6 +79,34 @@ export default class Renderer {
       - bus.width / 2, - bus.height / 2,
       bus.width, bus.height
     );
+
+    // Reverse lights    
+    if (!bus.forward) {
+      this.renderLight(
+        - bus.width / 2 + 5, - bus.height / 2, 20,
+        "#ffffff55", "#ffffff00",
+        - Math.PI
+      );
+      this.renderLight(
+        bus.width / 2 - 5, - bus.height / 2, - 20,
+        "#ffffff55", "#ffffff00",
+        Math.PI
+      );
+    }
+    
+    // Bus brake lights
+    if (bus.braking) {
+      this.renderLight(
+        - bus.width / 2 + 2, - bus.height / 2, 50,
+        "#ff000066", "#ff000000",
+        - (5 / 6) * Math.PI
+      );
+      this.renderLight(
+        bus.width / 2 - 2, - bus.height / 2, - 50,
+        "#ff000066", "#ff000000",
+        (5 / 6) * Math.PI
+      );
+    }
 
     this.ctx.restore();
   }

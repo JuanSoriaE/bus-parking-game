@@ -7,6 +7,7 @@ export default class Bus extends GameObject {
   turnAngle: number;
 
   forward: boolean;
+  braking: boolean;
 
   constructor(x: number, y: number, w: number, h: number) {
     super(x, y, w, h);
@@ -17,6 +18,7 @@ export default class Bus extends GameObject {
     this.turnAngle = 0;
 
     this.forward = true;
+    this.braking = false;
   }
 
   initVertices() {

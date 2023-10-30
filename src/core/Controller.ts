@@ -54,12 +54,15 @@ export default class Controller {
     }
 
     if (this.pressedKeys.includes("s")) {
+      this.game.bus.braking = true;
+
       if (Math.abs(this.game.bus.velocity) > 0) this.game.bus.audioManager?.playSoundEffect("braking");
       else this.game.bus.audioManager?.stopSoundEffect("braking");
 
       if (this.game.bus.forward) this.game.bus.acceleration = - Controller.BRAKE_ACCELERATION;
       else this.game.bus.acceleration = Controller.BRAKE_ACCELERATION;
     } else {
+      this.game.bus.braking = false;
       this.game.bus.audioManager?.stopSoundEffect("braking");
     }
 
