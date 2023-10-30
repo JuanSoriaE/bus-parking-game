@@ -3,21 +3,30 @@ type Vec2d = {
   y: number
 };
 
-type RectangleSetting = {
+type GameObjectSettings = {
   position: Vec2d,
   w: number,
   h: number,
   textureSrc?: string,
+  audiosSrc?: Array<Array<string>>,
 };
 
 type LevelSettings = {
   mapVertices: Array<Vec2d>,
-  busInitialPosition: Vec2d,
-  obstacles: Array<RectangleSetting>,
-  parkingBox: RectangleSetting,  
+  mapBackgroundTextureSrc?: string,
+  bus: GameObjectSettings,
+  obstacles: Array<GameObjectSettings>,
+  parkingBox: GameObjectSettings,
+};
+
+type AudioManagerAudio = {
+  name: string,
+  audio: HTMLAudioElement,
 };
 
 export type {
   Vec2d,
+  GameObjectSettings,
   LevelSettings,
+  AudioManagerAudio,
 }

@@ -6,28 +6,16 @@ import GameObject from "./GameObject";
 export default class Renderer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  origin: Vec2d;
 
-  busImage: HTMLImageElement;
-  parkingBoxImage: HTMLImageElement;
+  origin: Vec2d;
 
   constructor() {
     this.canvas = document.getElementById("cnv") as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.transform(1, 0, 0, -1, 0, this.canvas.height);
 
-    this.busImage = new Image();
-    this.parkingBoxImage = new Image();
-
     this.origin = {x: 0, y: 0};
-
-    this.initAssets();
   }
-
-  initAssets() {
-    this.busImage.src = "./src/assets/bus.png";
-    this.parkingBoxImage.src = "./src/assets/parkingBox.png";
-  };
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -46,22 +34,31 @@ export default class Renderer {
   }
 
   renderBackground() {
-    this.ctx.fillStyle = "#777";
+    this.ctx.fillStyle = "#555";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  renderMapBackground(mapVertices: Array<Vec2d>) {
-    this.ctx.fillStyle = "#FFF";
+  renderMapBackground(mapVertices: Array<Vec2d>, backgroundImage?: HTMLImageElement) {
+    if (backgroundImage)
+      return this.ctx.drawImage(
+        backgroundImage,
+        this.origin.x, this.origin.y,
+        mapVertices[2].x, mapVertices[2].y
+      );
+
+    this.ctx.fillStyle = "#7c8684";
     this.ctx.fillRect(this.origin.x, this.origin.y, mapVertices[2].x, mapVertices[2].y);
   }
 
   renderBus(bus: Bus) {
+    if (!bus.textureImage) return;
+
     this.ctx.save();
     this.ctx.translate(bus.position.x + this.origin.x, bus.position.y + this.origin.y);
     this.ctx.rotate((bus.angle - 1 / 2) * Math.PI);
 
     this.ctx.drawImage(
-      this.busImage,
+      bus.textureImage,
       - bus.width / 2, - bus.height / 2,
       bus.width, bus.height
     );
@@ -70,20 +67,31 @@ export default class Renderer {
   }
 
   renderObstacles(obstacles: Array<GameObject>) {
-    this.ctx.fillStyle = "#777";
+    this.ctx.fillStyle = "#96452a";
 
     for (const obstacle of obstacles) {
-      this.ctx.fillRect(obstacle.position.x + this.origin.x, obstacle.position.y + this.origin.y,
+      if (obstacle.textureImage) {
+        this.ctx.drawImage(
+          obstacle.textureImage,
+          obstacle.position.x + this.origin.x, obstacle.position.y + this.origin.y,
+          obstacle.width, obstacle.height
+        );
+
+        continue;
+      }
+
+      this.ctx.fillRect(
+        obstacle.position.x + this.origin.x, obstacle.position.y + this.origin.y,
         obstacle.width, obstacle.height
       );
     }
   }
 
   renderParkingBox(parkingBox: GameObject | null) {
-    if (!parkingBox) return;
+    if (!parkingBox || !parkingBox.textureImage) return;
 
     this.ctx.drawImage(
-      this.parkingBoxImage,
+      parkingBox.textureImage,
       parkingBox.position.x + this.origin.x, parkingBox.position.y + this.origin.y,
       parkingBox.width, parkingBox.height
     );
@@ -92,10 +100,11 @@ export default class Renderer {
   renderGame(game: Game) {
     this.origin.x = this.canvas.width / 2 - game.bus.position.x;
     this.origin.y = this.canvas.height / 2 - game.bus.position.y;
+
     this.clear();
 
     this.renderBackground();
-    this.renderMapBackground(game.mapVertices);
+    this.renderMapBackground(game.mapVertices, game.mapBackgroundTexture);
 
     this.renderParkingBox(game.parkingBox);
     this.renderObstacles(game.obstacles);

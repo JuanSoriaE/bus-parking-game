@@ -30,7 +30,13 @@ export default class Controller {
 
   handleKeyDown(e: KeyboardEvent) {
     // Switch keys
-    if (e.key == " ") return this.game.bus.forward = !this.game.bus.forward;
+    if (e.key == " ") {
+      this.game.bus.forward = !this.game.bus.forward;
+      if (!this.game.bus.forward) this.game.bus.audioManager?.playSoundEffectInfinite("backup-beep");
+      else this.game.bus.audioManager?.stopSoundEffect("backup-beep");
+
+      return;
+    }
 
     if (this.pressedKeys.includes(e.key)) return;
 
@@ -39,13 +45,24 @@ export default class Controller {
 
   update() {
     if (this.pressedKeys.includes("w")) {
-      if (this.game.bus.forward) this.game.bus.accelerate(Controller.ACCELERATION);
-      else this.game.bus.accelerate(- Controller.ACCELERATION);
+      this.game.bus.audioManager?.playSoundEffect("accelerating");
+
+      if (this.game.bus.forward) this.game.bus.acceleration = Controller.ACCELERATION;
+      else this.game.bus.acceleration = - Controller.ACCELERATION;
+    } else {
+      this.game.bus.audioManager?.stopSoundEffect("accelerating");
     }
+
     if (this.pressedKeys.includes("s")) {
-      if (this.game.bus.forward) this.game.bus.accelerate(- Controller.BRAKE_ACCELERATION);
-      else this.game.bus.accelerate(Controller.BRAKE_ACCELERATION);
+      if (Math.abs(this.game.bus.velocity) > 0) this.game.bus.audioManager?.playSoundEffect("braking");
+      else this.game.bus.audioManager?.stopSoundEffect("braking");
+
+      if (this.game.bus.forward) this.game.bus.acceleration = - Controller.BRAKE_ACCELERATION;
+      else this.game.bus.acceleration = Controller.BRAKE_ACCELERATION;
+    } else {
+      this.game.bus.audioManager?.stopSoundEffect("braking");
     }
+
     if (this.pressedKeys.includes("d")) this.game.bus.turn(- Controller.TURN_ANGLE);
     if (this.pressedKeys.includes("a")) this.game.bus.turn(Controller.TURN_ANGLE);
   }

@@ -1,7 +1,6 @@
 import { Vec2d } from "../types/main";
 import Bus from "./Bus";
 import GameObject from "./GameObject";
-import Obstacle from "./Obstacle";
 
 export default class CollisionDetector {
   constructor() {
@@ -46,7 +45,7 @@ export default class CollisionDetector {
     return true;
   }
 
-  checkBusCollision(bus: Bus, obstacles: Array<Obstacle>) {
+  rectangleCollied(bus: Bus, obstacles: Array<GameObject>) {
     for (const obstacle of obstacles) {
       for (const busVertex of bus.vertices) {
         if (this.isVertexInRectangle(busVertex, obstacle.vertices)) return true;
@@ -59,14 +58,10 @@ export default class CollisionDetector {
     return false;
   }
   
-  checkcIfOutOfMap(bus: Bus, mapVertices: Array<Vec2d>) {
+  checkcIfOutOfRectangle(bus: Bus, mapVertices: Array<Vec2d>) {
     for (const vertex of bus.vertices) {
       if (!this.isVertexInRectangle(vertex, mapVertices)) return true;
     }
     return false;
-  }
-
-  checkIfWin(bus: Bus, parkingBox: GameObject) {
-    return this.isRectangleInRectangle(bus.vertices, parkingBox.vertices) && bus.velocity === 0;
   }
 }

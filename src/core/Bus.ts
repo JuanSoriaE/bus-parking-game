@@ -5,16 +5,17 @@ export default class Bus extends GameObject {
   frontwheelsPosition: Vec2d;
   backwheelsPosition: Vec2d;
   turnAngle: number;
+
   forward: boolean;
 
   constructor(x: number, y: number, w: number, h: number) {
     super(x, y, w, h);
+    this.angle = 1 / 2;
 
-    this.velocity = 0;
     this.frontwheelsPosition = {x: x, y: y + this.height / 2 - 26.7};
     this.backwheelsPosition = {x: x, y: y - this.height / 2 + 33.6};
-    this.angle = 1 / 2;
     this.turnAngle = 0;
+
     this.forward = true;
   }
 
@@ -25,23 +26,23 @@ export default class Bus extends GameObject {
     this.vertices.push({x: this.position.x + this.width / 2, y: this.position.y + this.height / 2});
   }
 
-  accelerate(acceleration: number) {
-    this.acceleration = acceleration;
-  }
-
   friction() {
+    // Velocity reduction
     if (this.velocity == 0) this.acceleration = 0;
     else if (this.velocity > 0) this.acceleration = -3;
     else this.acceleration = 3;
 
-    // if (this.turnAngle == 0) this.turnAngle = 0;
-    // else if (this.turnAngle < 0 && Math.abs(this.velocity) > 0) {
-    //   this.turnAngle += Math.abs(this.velocity / 2) * (1 / 10000);
-    //   this.turnAngle = Math.min(this.turnAngle, 0);
-    // } else if (Math.abs(this.velocity) > 0) {
-    //   this.turnAngle -= Math.abs(this.velocity / 2) * (1 / 10000);
-    //   this.turnAngle = Math.max(this.turnAngle, 0);
-    // }
+    // Turn angle reduction
+    if (Math.abs(this.velocity) > 0) {
+      if (this.turnAngle == 0) return;
+
+      this.turnAngle += Math.pow(this.velocity, 2) / 2000000 * (this.turnAngle < 0 ? 1 : -1);
+      
+      if (this.turnAngle < 0)
+        this.turnAngle = Math.min(this.turnAngle, 0);
+      else
+        this.turnAngle = Math.max(this.turnAngle, 0);
+    }
   }
 
   update(deltaTime: number) {

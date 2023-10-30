@@ -2,8 +2,9 @@ import { LevelSettings } from "../types/main";
 
 export default {
   mapVertices: [
-    {x: 0, y: 0}, {x: 500, y: 0}, {x: 500, y: 800}, {x: 0, y: 800}
+    {x: 0, y: 0}, {x: 5000, y: 0}, {x: 5000, y: 5000}, {x: 0, y: 5000}
   ],
+  mapBackgroundTextureSrc: "grid.jpg",
   bus: {
     position: {x: 250, y: 150},
     w: 51, h: 244,
@@ -17,7 +18,7 @@ export default {
   },
   obstacles: [],
   parkingBox: {
-    position: {x: 210, y: 450},
+    position: {x: 0, y: 0},
     w: 80, h: 300,
     textureSrc: "parkingBox.png",
   },

@@ -1,25 +1,29 @@
 import { Vec2d } from "../types/main";
+import AudioManager from "./AudioManager";
 
 export default class GameObject {
   position: Vec2d;
   width: number;
   height: number;
+  vertices: Array<Vec2d>;
+
   angle: number;
   velocity: number;
   acceleration: number;
-  vertices: Array<Vec2d>;
-  textureImage?: HTMLImageElement;
 
-  constructor(x: number, y: number, w: number, h: number, textureSrc?: string) {
+  textureImage?: HTMLImageElement;
+  audioManager?: AudioManager;
+
+  constructor(x: number, y: number, w: number, h: number) {
     this.position = {x, y};
     this.width = w;
     this.height = h;
+    this.vertices = new Array<Vec2d>();
+
     this.angle = 0;
     this.velocity = 0;
     this.acceleration = 0;
-    this.vertices = new Array<Vec2d>();
 
-    this.initTextureImage(textureSrc);
     this.initVertices();
   }
 
@@ -30,10 +34,12 @@ export default class GameObject {
     this.vertices.push({x: this.position.x + this.width, y: this.position.y + this.height});
   };
 
-  initTextureImage(textureSrc?: string) {
-    if (!textureSrc) return;
-
+  setTexture(textureSrc: string) {
     this.textureImage = new Image();
-    this.textureImage.src = `./src/assets/${textureSrc}`;
+    this.textureImage.src = `./src/assets/images/${textureSrc}`;
+  }
+
+  setAudios(audios: Array<Array<string>>) {
+    this.audioManager = new AudioManager(audios);
   }
 }
