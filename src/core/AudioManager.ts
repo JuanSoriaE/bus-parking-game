@@ -1,16 +1,17 @@
+import { AudioSettings } from "../types/main";
+
 export default class AudioManager {
   audios: Map<string, HTMLAudioElement>;
 
-  constructor(audios: Array<Array<string>>) {
-    this.audios = new Map<string, HTMLAudioElement>
-
-    this.initAudios(audios);
+  constructor() {
+    this.audios = new Map<string, HTMLAudioElement>;
   }
 
-  initAudios(audios: Array<Array<string>>) {
+  setAudios(audios: Array<AudioSettings>) {
     for (const audio of audios) {
-      const audioElement: HTMLAudioElement = new Audio(`./src/assets/audios/${audio[1]}`);
-      this.audios.set(audio[0], audioElement);
+      const audioElement: HTMLAudioElement = new Audio(`./src/assets/audios/${audio.src}`);
+      audioElement.volume = audio.volume;
+      this.audios.set(audio.name, audioElement);
     }
   };
   

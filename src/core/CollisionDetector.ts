@@ -1,5 +1,4 @@
 import { Vec2d } from "../types/main";
-import Bus from "./Bus";
 import GameObject from "./GameObject";
 
 export default class CollisionDetector {
@@ -45,22 +44,24 @@ export default class CollisionDetector {
     return true;
   }
 
-  rectangleCollied(bus: Bus, obstacles: Array<GameObject>) {
-    for (const obstacle of obstacles) {
-      for (const busVertex of bus.vertices) {
-        if (this.isVertexInRectangle(busVertex, obstacle.vertices)) return true;
+  rectangleColliedWithRectangles(rectA: GameObject, rectangles: Array<GameObject>) {
+    for (const rectB of rectangles) {
+      for (const rectAVertex of rectA.vertices) {
+        if ((rectB.angle === 0 && this.isVertexInRectangle(rectAVertex, rectB.vertices)) ||
+            (rectB.angle !== 0 && this.isVertexInRotatedRectangle(rectAVertex, rectB.vertices, rectB.width * rectB.height))) return true;
       }
-      for (const obstacleVertex of obstacle.vertices) {
-        if (this.isVertexInRotatedRectangle(obstacleVertex, bus.vertices, bus.width * bus.height)) return true;
+      for (const rectBVertex of rectB.vertices) {
+        if ((rectA.angle === 0 && this.isVertexInRectangle(rectBVertex, rectA.vertices)) ||
+            (rectA.angle !== 0 && this.isVertexInRotatedRectangle(rectBVertex, rectA.vertices, rectA.width * rectA.height))) return true;
       }
     }
 
     return false;
   }
   
-  checkcIfOutOfRectangle(bus: Bus, mapVertices: Array<Vec2d>) {
-    for (const vertex of bus.vertices) {
-      if (!this.isVertexInRectangle(vertex, mapVertices)) return true;
+  isRectangleOutOfRectangle(rectA: GameObject, rectBVertices: Array<Vec2d>) {
+    for (const rectAVertex of rectA.vertices) {
+      if (!this.isVertexInRectangle(rectAVertex, rectBVertices)) return true; // Map angle always = 0
     }
     return false;
   }

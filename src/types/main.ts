@@ -8,7 +8,12 @@ type GameObjectSettings = {
   w: number,
   h: number,
   textureSrc?: string,
-  audiosSrc?: Array<Array<string>>,
+};
+
+type AudioSettings = {
+  name: string,
+  src: string,
+  volume: number,
 };
 
 type LevelSettings = {
@@ -17,16 +22,12 @@ type LevelSettings = {
   bus: GameObjectSettings,
   obstacles: Array<GameObjectSettings>,
   parkingBox: GameObjectSettings,
-};
-
-type AudioManagerAudio = {
-  name: string,
-  audio: HTMLAudioElement,
+  audiosSrc?: Array<AudioSettings>,
 };
 
 export type {
   Vec2d,
   GameObjectSettings,
+  AudioSettings,
   LevelSettings,
-  AudioManagerAudio,
 }

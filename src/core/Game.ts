@@ -1,14 +1,16 @@
 import { GameObjectSettings, LevelSettings, Vec2d } from "../types/main";
 import CollisionDetector from "./CollisionDetector";
-import Controller from "./Controller";
 import Renderer from "./Renderer";
 import GameObject from "./GameObject";
 import Bus from "./Bus";
+import AudioManager from "./AudioManager";
+import InputHandler from "./InputHandler";
 
 export default class Game {
   collisionDetector: CollisionDetector;
-  controller: Controller;
   renderer: Renderer;
+  inputHandler: InputHandler;
+  audioManager: AudioManager;
 
   level: number;
   mapVertices: Array<Vec2d>;
@@ -22,10 +24,11 @@ export default class Game {
 
   constructor() {
     this.collisionDetector = new CollisionDetector();
-    this.controller = new Controller(this);
+    this.inputHandler = new InputHandler();
     this.renderer = new Renderer();
+    this.audioManager = new AudioManager();
 
-    this.level = 1;
+    this.level = 2;
     this.mapVertices = new Array<Vec2d>();
 
     this.bus = new Bus(0, 0, 0, 0);
@@ -37,7 +40,7 @@ export default class Game {
     this.initLevel();
   }
 
-  initGameObject(settings: GameObjectSettings, audios?: Array<Array<string>>) {
+  initGameObject(settings: GameObjectSettings) {
     const gameObject: GameObject = new GameObject(
       settings.position.x, settings.position.y,
       settings.w, settings.h,
@@ -46,13 +49,10 @@ export default class Game {
     if (settings.textureSrc)
       gameObject.setTexture(settings.textureSrc);
 
-    if (audios)
-      gameObject.setAudios(audios);
-
     return gameObject;
   }
 
-  initBus(settings: GameObjectSettings, audios?: Array<Array<string>>) {
+  initBus(settings: GameObjectSettings) {
     this.bus = new Bus(
       settings.position.x, settings.position.y,
       settings.w, settings.h,
@@ -60,9 +60,6 @@ export default class Game {
 
     if (settings.textureSrc)
       this.bus.setTexture(settings.textureSrc);
-
-    if (audios)
-      this.bus.setAudios(audios);
   }
 
   async initLevel() {
@@ -74,30 +71,32 @@ export default class Game {
       this.mapBackgroundTexture.src = `./src/assets/images/${levelSettings.mapBackgroundTextureSrc}`;
     }
 
-    this.initBus(levelSettings.bus, levelSettings.bus.audiosSrc);
+    this.initBus(levelSettings.bus);
 
     for (const obstacleSettings of levelSettings.obstacles) {
       this.obstacles.push(this.initGameObject(obstacleSettings));
     }
 
     this.parkingBox = this.initGameObject(levelSettings.parkingBox);
+
+    this.audioManager.setAudios(levelSettings.audiosSrc ?? []);
   }
 
   start() {
     this.lastFrameTime = 0;
     this.gameLoop();
 
-    this.bus.audioManager?.playSoundEffectInfinite("engine");
+    this.audioManager.playSoundEffectInfinite("engine");
   }
 
   update(deltaTime: number) {
     // Game objects updating
-    this.controller.update();
+    this.bus.handleInput(this.inputHandler, this.audioManager);
     this.bus.update(deltaTime);
 
     // Collision detection
-    if (this.collisionDetector.rectangleCollied(this.bus, this.obstacles) ||
-      this.collisionDetector.checkcIfOutOfRectangle(this.bus, this.mapVertices)) return "YOU CRASHED";
+    if (this.collisionDetector.rectangleColliedWithRectangles(this.bus, this.obstacles) ||
+      this.collisionDetector.isRectangleOutOfRectangle(this.bus, this.mapVertices)) return "YOU CRASHED";
 
     if (this.collisionDetector.isRectangleInRectangle(this.bus.vertices, this.parkingBox.vertices) &&
       this.bus.velocity === 0) return "YOU WON!";
@@ -109,7 +108,7 @@ export default class Game {
   }
 
   finish(msg: string) {
-    this.bus.audioManager?.stopAllSoundEffects();
+    this.audioManager.stopAllSoundEffects();
     alert(msg);
   }
 

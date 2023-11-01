@@ -50,6 +50,22 @@ export default class Renderer {
     this.ctx.fillRect(this.origin.x, this.origin.y, mapVertices[2].x, mapVertices[2].y);
   }
 
+  renderGameObject(object: GameObject, color?: string) {
+    if (object.textureImage)
+      return this.ctx.drawImage(
+        object.textureImage,
+        object.position.x + this.origin.x, object.position.y + this.origin.y,
+        object.width, object.height
+      );
+    
+    this.ctx.fillStyle = color || "#000";
+
+    this.ctx.fillRect(
+      object.position.x + this.origin.x, object.position.y + this.origin.y,
+      object.width, object.height
+    );
+  }
+
   renderLight(x: number, y: number, radius: number, fromColor: string, toColor: string, angle: number) {
     const radialGradient: CanvasGradient = this.ctx.createRadialGradient(x, y, 0, x, y, Math.abs(radius));
     radialGradient.addColorStop(0, fromColor);
@@ -85,12 +101,12 @@ export default class Renderer {
       this.renderLight(
         - bus.width / 2 + 5, - bus.height / 2, 20,
         "#ffffff55", "#ffffff00",
-        - Math.PI
+        - (17 / 18) * Math.PI
       );
       this.renderLight(
         bus.width / 2 - 5, - bus.height / 2, - 20,
         "#ffffff55", "#ffffff00",
-        Math.PI
+        (17 / 18) * Math.PI
       );
     }
     
@@ -111,37 +127,6 @@ export default class Renderer {
     this.ctx.restore();
   }
 
-  renderObstacles(obstacles: Array<GameObject>) {
-    this.ctx.fillStyle = "#96452a";
-
-    for (const obstacle of obstacles) {
-      if (obstacle.textureImage) {
-        this.ctx.drawImage(
-          obstacle.textureImage,
-          obstacle.position.x + this.origin.x, obstacle.position.y + this.origin.y,
-          obstacle.width, obstacle.height
-        );
-
-        continue;
-      }
-
-      this.ctx.fillRect(
-        obstacle.position.x + this.origin.x, obstacle.position.y + this.origin.y,
-        obstacle.width, obstacle.height
-      );
-    }
-  }
-
-  renderParkingBox(parkingBox: GameObject | null) {
-    if (!parkingBox || !parkingBox.textureImage) return;
-
-    this.ctx.drawImage(
-      parkingBox.textureImage,
-      parkingBox.position.x + this.origin.x, parkingBox.position.y + this.origin.y,
-      parkingBox.width, parkingBox.height
-    );
-  }
-
   renderGame(game: Game) {
     this.origin.x = this.canvas.width / 2 - game.bus.position.x;
     this.origin.y = this.canvas.height / 2 - game.bus.position.y;
@@ -151,8 +136,11 @@ export default class Renderer {
     this.renderBackground();
     this.renderMapBackground(game.mapVertices, game.mapBackgroundTexture);
 
-    this.renderParkingBox(game.parkingBox);
-    this.renderObstacles(game.obstacles);
+    this.renderGameObject(game.parkingBox);
+    
+    for (const obstacle of game.obstacles)
+      this.renderGameObject(obstacle, "#6e3000");
+
     this.renderBus(game.bus);
   }
 }

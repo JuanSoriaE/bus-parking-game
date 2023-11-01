@@ -1,5 +1,7 @@
 import { Vec2d } from "../types/main";
+import AudioManager from "./AudioManager";
 import GameObject from "./GameObject";
+import InputHandler from "./InputHandler";
 
 export default class Bus extends GameObject {
   frontwheelsPosition: Vec2d;
@@ -8,6 +10,11 @@ export default class Bus extends GameObject {
 
   forward: boolean;
   braking: boolean;
+
+  ACCELERATION: number = 20;
+  BRAKE_ACCELERATION: number = 50;
+  TURN_ANGLE_VEL: number = 1 / 64;
+  FRICTION_ACCELERATION: number = 3;
 
   constructor(x: number, y: number, w: number, h: number) {
     super(x, y, w, h);
@@ -72,7 +79,6 @@ export default class Bus extends GameObject {
     ) / Math.PI;
 
     this.updateVertices();
-    this.friction();
   }
 
   updateVertices() {
@@ -97,5 +103,46 @@ export default class Bus extends GameObject {
   turn(turnAngle: number) {
     this.turnAngle += turnAngle;
     this.turnAngle = Math.min(Math.max(this.turnAngle, -1 / 4), 1 / 4);
+  }
+
+  handleInput(inputHandler: InputHandler, audioManager: AudioManager) {
+    if (inputHandler.pressedKeys.includes("w")) {
+      audioManager.playSoundEffect("accelerating");
+      
+      if (this.forward) this.acceleration = this.ACCELERATION;
+      else this.acceleration = - this.ACCELERATION;
+    } else {
+      audioManager.stopSoundEffect("accelerating");
+
+      // Friction
+      if (this.velocity === 0) this.acceleration = 0;
+      else if (this.velocity > 0) this.acceleration = - this.FRICTION_ACCELERATION;
+      else this.acceleration = this.FRICTION_ACCELERATION;
+    }
+
+    if (inputHandler.pressedKeys.includes("s")) {
+      if (this.velocity !== 0) audioManager.playSoundEffect("braking");
+      else audioManager.stopSoundEffect("braking");
+
+      this.braking = true;
+      if (this.forward) this.acceleration = - this.BRAKE_ACCELERATION;
+      else this.acceleration = this.BRAKE_ACCELERATION;
+    } else {
+      audioManager.stopSoundEffect("braking");
+      
+      this.braking = false;
+    }
+
+    if (inputHandler.pressedKeys.includes("a")) this.turn(this.TURN_ANGLE_VEL);
+    if (inputHandler.pressedKeys.includes("d")) this.turn(- this.TURN_ANGLE_VEL);
+
+    // Switch keys
+    if (inputHandler.pressedKeys.includes(" ")) {
+      this.forward = !this.forward;
+      if (!this.forward) audioManager.playSoundEffectInfinite("backup-beep");
+      else audioManager.stopSoundEffect("backup-beep");
+
+      inputHandler.deletePressedKey(" ");
+    }
   }
 }

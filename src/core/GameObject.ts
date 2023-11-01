@@ -1,5 +1,4 @@
 import { Vec2d } from "../types/main";
-import AudioManager from "./AudioManager";
 
 export default class GameObject {
   position: Vec2d;
@@ -12,7 +11,6 @@ export default class GameObject {
   acceleration: number;
 
   textureImage?: HTMLImageElement;
-  audioManager?: AudioManager;
 
   constructor(x: number, y: number, w: number, h: number) {
     this.position = {x, y};
@@ -37,9 +35,5 @@ export default class GameObject {
   setTexture(textureSrc: string) {
     this.textureImage = new Image();
     this.textureImage.src = `./src/assets/images/${textureSrc}`;
-  }
-
-  setAudios(audios: Array<Array<string>>) {
-    this.audioManager = new AudioManager(audios);
   }
 }
