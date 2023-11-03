@@ -7,22 +7,22 @@ type GameObjectSettings = {
   position: Vec2d,
   w: number,
   h: number,
-  textureSrc?: string,
+  textureSrcId?: string,
 };
 
 type AudioSettings = {
   name: string,
-  src: string,
+  srcId: string,
   volume: number,
 };
 
 type LevelSettings = {
   mapVertices: Array<Vec2d>,
-  mapBackgroundTextureSrc?: string,
+  mapBackgroundTextureSrcId?: string,
   bus: GameObjectSettings,
   obstacles: Array<GameObjectSettings>,
   parkingBox: GameObjectSettings,
-  audiosSrc?: Array<AudioSettings>,
+  audios: Array<AudioSettings>,
 };
 
 export type {

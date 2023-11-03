@@ -32,8 +32,7 @@ export default class GameObject {
     this.vertices.push({x: this.position.x + this.width, y: this.position.y + this.height});
   };
 
-  setTexture(textureSrc: string) {
-    this.textureImage = new Image();
-    this.textureImage.src = `./src/assets/images/${textureSrc}`;
+  setTexture(textureSrcId: string) {
+    this.textureImage = document.getElementById(textureSrcId) as HTMLImageElement;
   }
 }

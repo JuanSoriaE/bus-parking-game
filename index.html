@@ -5,10 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bus Parking Game</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <button id="start-game-button">START</button>
     <canvas id="cnv" width="1200" height="700"></canvas>
+
+    <!-- GAME IMAGES -->
+    <img src="/assets/images/bus.png" id="busImg">
+    <img src="/assets/images/parkingBox.png" id="parkingBoxImg">
+    <img src="/assets/images/grid.jpg" id="gridImg">
+    <!-- GAME AUDIOS -->
+    <audio src="/assets/audios/engine.mp3" id="engineAudio"></audio>
+    <audio src="/assets/audios/accelerating.wav" id="acceleratingAudio"></audio>
+    <audio src="/assets/audios/braking.wav" id="brakingAudio"></audio>
+    <audio src="/assets/audios/backup-beep.mp3" id="backupBeepAudio"></audio>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

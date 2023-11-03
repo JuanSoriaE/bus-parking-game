@@ -9,7 +9,7 @@ export default class AudioManager {
 
   setAudios(audios: Array<AudioSettings>) {
     for (const audio of audios) {
-      const audioElement: HTMLAudioElement = new Audio(`./src/assets/audios/${audio.src}`);
+      const audioElement: HTMLAudioElement = document.getElementById(audio.srcId) as HTMLAudioElement;
       audioElement.volume = audio.volume;
       this.audios.set(audio.name, audioElement);
     }
@@ -39,8 +39,7 @@ export default class AudioManager {
   }
 
   stopAllSoundEffects() {
-    for (const [key] of this.audios) {
+    for (const [key] of this.audios)
       this.stopSoundEffect(key);
-    }
   }
 }

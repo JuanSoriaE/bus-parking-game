@@ -46,8 +46,8 @@ export default class Game {
       settings.w, settings.h,
     );
 
-    if (settings.textureSrc)
-      gameObject.setTexture(settings.textureSrc);
+    if (settings.textureSrcId)
+      gameObject.setTexture(settings.textureSrcId);
 
     return gameObject;
   }
@@ -58,28 +58,25 @@ export default class Game {
       settings.w, settings.h,
     );
 
-    if (settings.textureSrc)
-      this.bus.setTexture(settings.textureSrc);
+    if (settings.textureSrcId)
+      this.bus.setTexture(settings.textureSrcId);
   }
 
   async initLevel() {
-    const levelSettings: LevelSettings = (await import(`./../levels/level${this.level}`)).default;
+    const levelSettings: LevelSettings = (await import(`./../levels/level${this.level}.ts`)).default;
 
     this.mapVertices = levelSettings.mapVertices;
-    if (levelSettings.mapBackgroundTextureSrc) {
-      this.mapBackgroundTexture = new Image();
-      this.mapBackgroundTexture.src = `./src/assets/images/${levelSettings.mapBackgroundTextureSrc}`;
-    }
+    if (levelSettings.mapBackgroundTextureSrcId)
+      this.mapBackgroundTexture = document.getElementById(levelSettings.mapBackgroundTextureSrcId) as HTMLImageElement;
 
     this.initBus(levelSettings.bus);
 
-    for (const obstacleSettings of levelSettings.obstacles) {
+    for (const obstacleSettings of levelSettings.obstacles)
       this.obstacles.push(this.initGameObject(obstacleSettings));
-    }
 
     this.parkingBox = this.initGameObject(levelSettings.parkingBox);
 
-    this.audioManager.setAudios(levelSettings.audiosSrc ?? []);
+    this.audioManager.setAudios(levelSettings.audios ?? []);
   }
 
   start() {

@@ -7,33 +7,33 @@ export default {
   bus: {
     position: {x: 250, y: 150},
     w: 51, h: 244,
-    textureSrc: "bus.png",
+    textureSrcId: "busImg",
   },
   obstacles: [],
   parkingBox: {
     position: {x: 210, y: 450},
     w: 80, h: 300,
-    textureSrc: "parkingBox.png",
+    textureSrcId: "parkingBoxImg",
   },
-  audiosSrc: [
+  audios: [
     {
       name: "accelerating",
-      src: "accelerating.wav",
+      srcId: "acceleratingAudio",
       volume: 0.4,
     },
     {
       name: "braking",
-      src: "braking.wav",
+      srcId: "brakingAudio",
       volume: 0.5,
     },
     {
       name: "engine",
-      src: "engine.mp3",
+      srcId: "engineAudio",
       volume: 0.3,
     },
     {
       name: "backup-beep",
-      src: "backup-beep.mp3",
+      srcId: "backupBeepAudio",
       volume: 0.2,
     },
   ],
