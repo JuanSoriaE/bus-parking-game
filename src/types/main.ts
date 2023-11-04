@@ -7,6 +7,7 @@ type GameObjectSettings = {
   position: Vec2d,
   w: number,
   h: number,
+  angle?: number,
   textureSrcId?: string,
 };
 

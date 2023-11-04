@@ -21,18 +21,6 @@ export default class Renderer {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  canvasArrow(fromx: number, fromy: number, tox: number, toy: number) {
-    var headlen = 10; // length of head in pixels
-    var dx = tox - fromx;
-    var dy = toy - fromy;
-    var angle = Math.atan2(dy, dx);
-    this.ctx.moveTo(fromx, fromy);
-    this.ctx.lineTo(tox, toy);
-    this.ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-    this.ctx.moveTo(tox, toy);
-    this.ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-  }
-
   renderBackground() {
     this.ctx.fillStyle = "#555";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -51,19 +39,34 @@ export default class Renderer {
   }
 
   renderGameObject(object: GameObject, color?: string) {
-    if (object.textureImage)
-      return this.ctx.drawImage(
+    const xOffset: number = !object.isRotated() ? object.position.x + this.origin.x : 0,
+          yOffset: number = !object.isRotated() ? object.position.y + this.origin.y : 0;
+
+    if (object.isRotated()) {
+      this.ctx.save();
+      this.ctx.translate(object.position.x + this.origin.x, object.position.y + this.origin.y);
+      this.ctx.rotate(object.angle * Math.PI);
+    }
+
+    if (object.textureImage) {
+      this.ctx.drawImage(
         object.textureImage,
-        object.position.x + this.origin.x, object.position.y + this.origin.y,
+        - object.width / 2 + xOffset,
+        - object.height / 2 + yOffset,
         object.width, object.height
       );
-    
-    this.ctx.fillStyle = color || "#000";
+    } else {
+      this.ctx.fillStyle = color || "#000";
 
-    this.ctx.fillRect(
-      object.position.x + this.origin.x, object.position.y + this.origin.y,
-      object.width, object.height
-    );
+      this.ctx.fillRect(
+        - object.width / 2 + xOffset,
+        - object.height / 2 + yOffset,
+        object.width, object.height
+      );
+    }
+
+    if (object.isRotated())
+      this.ctx.restore();
   }
 
   renderLight(x: number, y: number, radius: number, fromColor: string, toColor: string, angle: number) {
@@ -83,48 +86,54 @@ export default class Renderer {
     this.ctx.fill();
   }
 
-  renderBus(bus: Bus) {
-    if (!bus.textureImage) return;
+  renderBusLights(bus: Bus) {
+    const xOffset: number = !bus.isRotated() ? bus.position.x + this.origin.x : 0,
+          yOffset: number = !bus.isRotated() ? bus.position.y + this.origin.y : 0;
 
-    this.ctx.save();
-    this.ctx.translate(bus.position.x + this.origin.x, bus.position.y + this.origin.y);
-    this.ctx.rotate((bus.angle - 1 / 2) * Math.PI);
-
-    this.ctx.drawImage(
-      bus.textureImage,
-      - bus.width / 2, - bus.height / 2,
-      bus.width, bus.height
-    );
+    if (bus.isRotated()) {
+      this.ctx.save();
+      this.ctx.translate(bus.position.x + this.origin.x, bus.position.y + this.origin.y);
+      this.ctx.rotate(bus.angle * Math.PI)
+    }
 
     // Reverse lights    
     if (!bus.forward) {
       this.renderLight(
-        - bus.width / 2 + 5, - bus.height / 2, 20,
-        "#ffffff55", "#ffffff00",
-        - (17 / 18) * Math.PI
-      );
-      this.renderLight(
-        bus.width / 2 - 5, - bus.height / 2, - 20,
+        - bus.width / 2 + 5 + xOffset, bus.height / 2 + yOffset, 20,
         "#ffffff55", "#ffffff00",
         (17 / 18) * Math.PI
+      );
+      this.renderLight(
+        bus.width / 2 - 5 + xOffset, bus.height / 2 + yOffset, - 20,
+        "#ffffff55", "#ffffff00",
+        - (17 / 18) * Math.PI
       );
     }
     
     // Bus brake lights
     if (bus.braking) {
       this.renderLight(
-        - bus.width / 2 + 2, - bus.height / 2, 50,
-        "#ff000066", "#ff000000",
-        - (5 / 6) * Math.PI
-      );
-      this.renderLight(
-        bus.width / 2 - 2, - bus.height / 2, - 50,
+        - bus.width / 2 + 2 + xOffset, bus.height / 2 + yOffset, 50,
         "#ff000066", "#ff000000",
         (5 / 6) * Math.PI
       );
+      this.renderLight(
+        bus.width / 2 - 2, bus.height / 2, - 50,
+        "#ff000066", "#ff000000",
+        - (5 / 6) * Math.PI
+      );
     }
 
-    this.ctx.restore();
+    if (bus.isRotated())
+      this.ctx.restore();
+  }
+
+  renderVertices(object: GameObject) {
+    this.ctx.fillStyle = "#ff0000";
+
+    for (const vertex of object.vertices) {
+      this.ctx.fillRect(vertex.x + this.origin.x, vertex.y + this.origin.y, 5, 5);
+    }
   }
 
   renderGame(game: Game) {
@@ -137,10 +146,11 @@ export default class Renderer {
     this.renderMapBackground(game.mapVertices, game.mapBackgroundTexture);
 
     this.renderGameObject(game.parkingBox);
-    
+
     for (const obstacle of game.obstacles)
       this.renderGameObject(obstacle, "#6e3000");
 
-    this.renderBus(game.bus);
+    this.renderGameObject(game.bus);
+    this.renderBusLights(game.bus);
   }
 }

@@ -2,38 +2,36 @@ import { LevelSettings } from "../types/main";
 
 export default {
   mapVertices: [
-    {x: 0, y: 0}, {x: 800, y: 0}, {x: 800, y: 1200}, {x: 0, y: 1200}
+    {x: 0, y: 0}, {x: 800, y: 0}, {x: 800, y: 800}, {x: 0, y: 800}
   ],
   bus: {
-    position: {x: 300, y: 150},
+    position: {x: 700, y: 150},
     w: 51, h: 244,
     textureSrcId: "busImg",
   },
   obstacles: [
     {
-      position: {x: 100, y: 300},
-      w: 200, h: 600,
+      position: {x: 0, y: 800},
+      w: 700, h: 700,
+      angle: 1 / 4,
     },
     {
-      position: {x: 200, y: 800},
-      w: 400, h: 400,
+      position: {x: 270, y: 380},
+      w: 51, h: 244,
+      angle: 5 / 4,
+      textureSrcId: "busImg",
     },
     {
-      position: {x: 400, y: 1100},
-      w: 800, h: 200,
-    },
-    {
-      position: {x: 700, y: 700},
-      w: 200, h: 600,
-    },
-    {
-      position: {x: 600, y: 200},
-      w: 400, h: 400,
+      position: {x: 420, y: 530},
+      w: 51, h: 244,
+      angle: 5 / 4,
+      textureSrcId: "busImg",
     },
   ],
   parkingBox: {
-    position: {x: 500, y: 800},
+    position: {x: 360, y: 440},
     w: 80, h: 300,
+    angle: 1 / 4,
     textureSrcId: "parkingBoxImg",
   },
   audios: [

@@ -28,7 +28,7 @@ export default class Game {
     this.renderer = new Renderer();
     this.audioManager = new AudioManager();
 
-    this.level = 2;
+    this.level = 3;
     this.mapVertices = new Array<Vec2d>();
 
     this.bus = new Bus(0, 0, 0, 0);
@@ -44,6 +44,7 @@ export default class Game {
     const gameObject: GameObject = new GameObject(
       settings.position.x, settings.position.y,
       settings.w, settings.h,
+      settings.angle,
     );
 
     if (settings.textureSrcId)
@@ -95,7 +96,7 @@ export default class Game {
     if (this.collisionDetector.rectangleColliedWithRectangles(this.bus, this.obstacles) ||
       this.collisionDetector.isRectangleOutOfRectangle(this.bus, this.mapVertices)) return "YOU CRASHED";
 
-    if (this.collisionDetector.isRectangleInRectangle(this.bus.vertices, this.parkingBox.vertices) &&
+    if (this.collisionDetector.isRectangleInRectangle(this.bus, this.parkingBox) &&
       this.bus.velocity === 0) return "YOU WON!";
 
     // Rendering

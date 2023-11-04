@@ -11,7 +11,7 @@ export default {
   },
   obstacles: [],
   parkingBox: {
-    position: {x: 210, y: 450},
+    position: {x: 250, y: 600},
     w: 80, h: 300,
     textureSrcId: "parkingBoxImg",
   },
