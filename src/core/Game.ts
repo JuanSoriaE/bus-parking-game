@@ -100,7 +100,20 @@ export default class Game {
       this.bus.velocity === 0) return "YOU WON!";
 
     // Rendering
-    this.renderer.renderGame(this);
+    this.renderer.origin.x = this.renderer.canvas.width / 2 - this.bus.position.x;
+    this.renderer.origin.y = this.renderer.canvas.height / 2 - this.bus.position.y;
+
+    this.renderer.clear();
+    this.renderer.renderBackground();
+    this.renderer.renderMapBackground(this.mapVertices, this.mapBackgroundTexture);
+
+    this.renderer.renderGameObject(this.parkingBox);
+
+    for (const obstacle of this.obstacles)
+      this.renderer.renderGameObject(obstacle, "#6e3000");
+
+    this.renderer.renderGameObject(this.bus);
+    this.renderer.renderBusLights(this.bus);
 
     return "";
   }

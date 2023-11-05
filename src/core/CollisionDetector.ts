@@ -32,8 +32,8 @@ export default class CollisionDetector {
       (B.x * P.y - P.x * B.y)
       + (A.x * B.y - B.x * A.y)
       + (P.x * A.y - A.x * P.y)) / 2;
-    
-    return areaAPD + areaDPC + areaCPB + areaPBA <= rectangleArea;
+
+    return Math.floor(areaAPD + areaDPC + areaCPB + areaPBA) <= rectangleArea;
   }
 
   isRectangleInRectangle(rect1: GameObject, rect2: GameObject) {

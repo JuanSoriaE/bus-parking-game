@@ -1,6 +1,5 @@
 import { Vec2d } from "../types/main";
 import Bus from "./Bus";
-import Game from "./Game";
 import GameObject from "./GameObject";
 
 export default class Renderer {
@@ -39,34 +38,27 @@ export default class Renderer {
   }
 
   renderGameObject(object: GameObject, color?: string) {
-    const xOffset: number = !object.isRotated() ? object.position.x + this.origin.x : 0,
-          yOffset: number = !object.isRotated() ? object.position.y + this.origin.y : 0;
+    this.ctx.fillStyle = color || "#000";
 
-    if (object.isRotated()) {
-      this.ctx.save();
-      this.ctx.translate(object.position.x + this.origin.x, object.position.y + this.origin.y);
-      this.ctx.rotate(object.angle * Math.PI);
-    }
+    this.ctx.save();
+    this.ctx.translate(object.position.x + this.origin.x, object.position.y + this.origin.y);
+    this.ctx.rotate(object.angle * Math.PI);
 
-    if (object.textureImage) {
+    if (object.textureImage)
       this.ctx.drawImage(
         object.textureImage,
-        - object.width / 2 + xOffset,
-        - object.height / 2 + yOffset,
+        - object.width / 2,
+        - object.height / 2,
         object.width, object.height
       );
-    } else {
-      this.ctx.fillStyle = color || "#000";
-
+    else
       this.ctx.fillRect(
-        - object.width / 2 + xOffset,
-        - object.height / 2 + yOffset,
+        - object.width / 2,
+        - object.height / 2,
         object.width, object.height
       );
-    }
 
-    if (object.isRotated())
-      this.ctx.restore();
+    this.ctx.restore();
   }
 
   renderLight(x: number, y: number, radius: number, fromColor: string, toColor: string, angle: number) {
@@ -124,8 +116,7 @@ export default class Renderer {
       );
     }
 
-    if (bus.isRotated())
-      this.ctx.restore();
+    this.ctx.restore();
   }
 
   renderVertices(object: GameObject) {
@@ -134,23 +125,5 @@ export default class Renderer {
     for (const vertex of object.vertices) {
       this.ctx.fillRect(vertex.x + this.origin.x, vertex.y + this.origin.y, 5, 5);
     }
-  }
-
-  renderGame(game: Game) {
-    this.origin.x = this.canvas.width / 2 - game.bus.position.x;
-    this.origin.y = this.canvas.height / 2 - game.bus.position.y;
-
-    this.clear();
-
-    this.renderBackground();
-    this.renderMapBackground(game.mapVertices, game.mapBackgroundTexture);
-
-    this.renderGameObject(game.parkingBox);
-
-    for (const obstacle of game.obstacles)
-      this.renderGameObject(obstacle, "#6e3000");
-
-    this.renderGameObject(game.bus);
-    this.renderBusLights(game.bus);
   }
 }
