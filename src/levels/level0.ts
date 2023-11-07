@@ -6,13 +6,21 @@ export default {
   ],
   mapBackgroundTextureSrcId: "gridImg",
   bus: {
-    position: {x: 250, y: 150},
-    w: 51, h: 244,
-    textureSrcId: "busImg",
+    position: {x: 250, y: 250},
+    w: 52, h: 263.5,
+    textureSrcId: "bus-volvo-9800",
+    frontwheelsOverhang: 41.8,
+    backwheelsOverhang: 41.8,
   },
-  obstacles: [],
+  obstacles: [
+    {
+      position: {x: 450, y: 250},
+      w: 52, h: 274,
+      textureSrcId: "bus-irizar-i6",
+    },
+  ],
   parkingBox: {
-    position: {x: 0, y: 0},
+    position: {x: 250, y: 500},
     w: 80, h: 300,
     textureSrcId: "parkingBoxImg",
   },

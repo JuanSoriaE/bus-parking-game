@@ -119,11 +119,13 @@ export default class Renderer {
     this.ctx.restore();
   }
 
-  renderVertices(object: GameObject) {
-    this.ctx.fillStyle = "#ff0000";
+  renderVertex(vertex: Vec2d, color?: string) {
+    this.ctx.fillStyle = color || "#ff0000";
+    this.ctx.fillRect(vertex.x + this.origin.x - 1, vertex.y + this.origin.y - 1, 3, 2);
+  }
 
-    for (const vertex of object.vertices) {
-      this.ctx.fillRect(vertex.x + this.origin.x, vertex.y + this.origin.y, 5, 5);
-    }
+  renderVertices(object: GameObject) {
+    for (const vertex of object.vertices)
+      this.renderVertex(vertex);
   }
 }

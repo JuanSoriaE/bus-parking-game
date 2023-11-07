@@ -6,6 +6,8 @@ import InputHandler from "./InputHandler";
 export default class Bus extends GameObject {
   frontwheelsPosition: Vec2d;
   backwheelsPosition: Vec2d;
+  frontwheelsOverhang: number;
+  backwheelsOverhang: number;
   headingAngle: number;
   turnAngle: number;
 
@@ -17,11 +19,13 @@ export default class Bus extends GameObject {
   TURN_ANGLE_VEL: number = 1 / 64;
   FRICTION_ACCELERATION: number = 3;
 
-  constructor(x: number, y: number, w: number, h: number) {
+  constructor(x: number, y: number, w: number, h: number, frontwheelsOverhang: number, backwheelsOverhang: number) {
     super(x, y, w, h);
 
-    this.frontwheelsPosition = {x: x, y: y + this.height / 2 - 26.7};
-    this.backwheelsPosition = {x: x, y: y - this.height / 2 + 33.6};
+    this.frontwheelsOverhang = frontwheelsOverhang;
+    this.backwheelsOverhang = backwheelsOverhang;
+    this.frontwheelsPosition = {x: x, y: y + this.height / 2 - frontwheelsOverhang};
+    this.backwheelsPosition = {x: x, y: y - this.height / 2 + backwheelsOverhang};
     this.headingAngle = 1 / 2;
     this.turnAngle = 0;
 
@@ -30,10 +34,10 @@ export default class Bus extends GameObject {
   }
 
   update(deltaTime: number) {
-    this.frontwheelsPosition.x = this.position.x + (this.height / 2 - 26.7) * Math.cos(this.headingAngle * Math.PI);
-    this.frontwheelsPosition.y = this.position.y + (this.height / 2 - 26.7) * Math.sin(this.headingAngle * Math.PI);
-    this.backwheelsPosition.x = this.position.x - (this.height / 2 - 26.7) * Math.cos(this.headingAngle * Math.PI);
-    this.backwheelsPosition.y = this.position.y - (this.height / 2 - 26.7) * Math.sin(this.headingAngle * Math.PI);
+    this.frontwheelsPosition.x = this.position.x + (this.height / 2 - this.frontwheelsOverhang) * Math.cos(this.headingAngle * Math.PI);
+    this.frontwheelsPosition.y = this.position.y + (this.height / 2 - this.frontwheelsOverhang) * Math.sin(this.headingAngle * Math.PI);
+    this.backwheelsPosition.x = this.position.x - (this.height / 2 - this.backwheelsOverhang) * Math.cos(this.headingAngle * Math.PI);
+    this.backwheelsPosition.y = this.position.y - (this.height / 2 - this.backwheelsOverhang) * Math.sin(this.headingAngle * Math.PI);
 
     this.velocity += this.acceleration * deltaTime;
 

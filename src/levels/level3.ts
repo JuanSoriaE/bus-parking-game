@@ -6,8 +6,10 @@ export default {
   ],
   bus: {
     position: {x: 700, y: 150},
-    w: 51, h: 244,
-    textureSrcId: "busImg",
+    w: 52, h: 263.5,
+    textureSrcId: "bus-volvo-9800",
+    frontwheelsOverhang: 41.8,
+    backwheelsOverhang: 41.8,
   },
   obstacles: [
     {
@@ -16,16 +18,16 @@ export default {
       angle: 1 / 4,
     },
     {
-      position: {x: 270, y: 380},
-      w: 51, h: 244,
+      position: {x: 280, y: 370},
+      w: 52, h: 274,
       angle: 5 / 4,
-      textureSrcId: "busImg",
+      textureSrcId: "bus-irizar-i6",
     },
     {
-      position: {x: 420, y: 530},
-      w: 51, h: 244,
+      position: {x: 430, y: 520},
+      w: 52, h: 263.5,
       angle: 5 / 4,
-      textureSrcId: "busImg",
+      textureSrcId: "bus-volvo-9800",
     },
   ],
   parkingBox: {

@@ -11,6 +11,11 @@ type GameObjectSettings = {
   textureSrcId?: string,
 };
 
+type BusSettings = GameObjectSettings & {
+  frontwheelsOverhang: number,
+  backwheelsOverhang: number,
+};
+
 type AudioSettings = {
   name: string,
   srcId: string,
@@ -20,7 +25,7 @@ type AudioSettings = {
 type LevelSettings = {
   mapVertices: Array<Vec2d>,
   mapBackgroundTextureSrcId?: string,
-  bus: GameObjectSettings,
+  bus: BusSettings,
   obstacles: Array<GameObjectSettings>,
   parkingBox: GameObjectSettings,
   audios: Array<AudioSettings>,
@@ -29,6 +34,7 @@ type LevelSettings = {
 export type {
   Vec2d,
   GameObjectSettings,
+  BusSettings,
   AudioSettings,
   LevelSettings,
 }

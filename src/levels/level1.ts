@@ -6,8 +6,10 @@ export default {
   ],
   bus: {
     position: {x: 250, y: 150},
-    w: 51, h: 244,
-    textureSrcId: "busImg",
+    w: 52, h: 274,
+    textureSrcId: "bus-irizar-i6",
+    frontwheelsOverhang: 41.8,
+    backwheelsOverhang: 41.8,
   },
   obstacles: [],
   parkingBox: {
