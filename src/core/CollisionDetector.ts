@@ -32,13 +32,14 @@ export default class CollisionDetector {
       (B.x * P.y - P.x * B.y)
       + (A.x * B.y - B.x * A.y)
       + (P.x * A.y - A.x * P.y)) / 2;
-    
-    return areaAPD + areaDPC + areaCPB + areaPBA <= rectangleArea;
+
+    return Math.floor(areaAPD + areaDPC + areaCPB + areaPBA) <= rectangleArea;
   }
 
-  isRectangleInRectangle(rect1: Array<Vec2d>, rect2: Array<Vec2d>) {
-    for (const vertex of rect1) {
-      if (!this.isVertexInRectangle(vertex, rect2)) return false;
+  isRectangleInRectangle(rect1: GameObject, rect2: GameObject) {
+    for (const vertex of rect1.vertices) {
+      if (!this.isVertexInRectangle(vertex, rect2.vertices) &&
+          !this.isVertexInRotatedRectangle(vertex, rect2.vertices, rect2.width * rect2.height)) return false;
     }
 
     return true;

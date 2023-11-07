@@ -2,37 +2,39 @@ import { LevelSettings } from "../types/main";
 
 export default {
   mapVertices: [
-    {x: 0, y: 0}, {x: 1050, y: 0}, {x: 1050, y: 1250}, {x: 0, y: 1250}
+    {x: 0, y: 0}, {x: 800, y: 0}, {x: 800, y: 1200}, {x: 0, y: 1200}
   ],
   bus: {
-    position: {x: 325, y: 150},
-    w: 51, h: 244,
-    textureSrcId: "busImg",
+    position: {x: 300, y: 150},
+    w: 52, h: 274,
+    textureSrcId: "bus-irizar-i6",
+    frontwheelsOverhang: 41.8,
+    backwheelsOverhang: 41.8,
   },
   obstacles: [
     {
-      position: {x: 0, y: 0},
-      w: 200, h: 650,
+      position: {x: 100, y: 300},
+      w: 200, h: 600,
     },
     {
-      position: {x: 0, y: 650},
-      w: 600, h: 400,
-    },
-    {
-      position: {x: 450, y: 0},
+      position: {x: 200, y: 800},
       w: 400, h: 400,
     },
     {
-      position: {x: 850, y: 0},
-      w: 200, h: 1050,
+      position: {x: 400, y: 1100},
+      w: 800, h: 200,
     },
     {
-      position: {x: 0, y: 1050},
-      w: 1050, h: 200,
+      position: {x: 700, y: 700},
+      w: 200, h: 600,
+    },
+    {
+      position: {x: 600, y: 200},
+      w: 400, h: 400,
     },
   ],
   parkingBox: {
-    position: {x: 685, y: 700},
+    position: {x: 500, y: 800},
     w: 80, h: 300,
     textureSrcId: "parkingBoxImg",
   },

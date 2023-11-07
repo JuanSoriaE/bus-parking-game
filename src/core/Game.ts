@@ -1,4 +1,4 @@
-import { GameObjectSettings, LevelSettings, Vec2d } from "../types/main";
+import { BusSettings, GameObjectSettings, LevelSettings, Vec2d } from "../types/main";
 import CollisionDetector from "./CollisionDetector";
 import Renderer from "./Renderer";
 import GameObject from "./GameObject";
@@ -28,10 +28,10 @@ export default class Game {
     this.renderer = new Renderer();
     this.audioManager = new AudioManager();
 
-    this.level = 2;
+    this.level = 3;
     this.mapVertices = new Array<Vec2d>();
 
-    this.bus = new Bus(0, 0, 0, 0);
+    this.bus = new Bus(0, 0, 0, 0, 0, 0);
     this.obstacles = new Array<GameObject>();
     this.parkingBox = new GameObject(0, 0, 0, 0);
 
@@ -44,6 +44,7 @@ export default class Game {
     const gameObject: GameObject = new GameObject(
       settings.position.x, settings.position.y,
       settings.w, settings.h,
+      settings.angle,
     );
 
     if (settings.textureSrcId)
@@ -52,10 +53,11 @@ export default class Game {
     return gameObject;
   }
 
-  initBus(settings: GameObjectSettings) {
+  initBus(settings: BusSettings) {
     this.bus = new Bus(
       settings.position.x, settings.position.y,
       settings.w, settings.h,
+      settings.frontwheelsOverhang, settings.backwheelsOverhang,
     );
 
     if (settings.textureSrcId)
@@ -79,6 +81,23 @@ export default class Game {
     this.audioManager.setAudios(levelSettings.audios ?? []);
   }
 
+  renderGame() {
+    this.renderer.origin.x = this.renderer.canvas.width / 2 - this.bus.position.x;
+    this.renderer.origin.y = this.renderer.canvas.height / 2 - this.bus.position.y;
+
+    this.renderer.clear();
+    this.renderer.renderBackground();
+    this.renderer.renderMapBackground(this.mapVertices, this.mapBackgroundTexture);
+
+    this.renderer.renderGameObject(this.parkingBox);
+
+    for (const obstacle of this.obstacles)
+      this.renderer.renderGameObject(obstacle, "#6e3000");
+
+    this.renderer.renderGameObject(this.bus);
+    this.renderer.renderBusLights(this.bus);
+  }
+
   start() {
     this.lastFrameTime = 0;
     this.gameLoop();
@@ -91,15 +110,15 @@ export default class Game {
     this.bus.handleInput(this.inputHandler, this.audioManager);
     this.bus.update(deltaTime);
 
+    // Rendering
+    this.renderGame();
+
     // Collision detection
     if (this.collisionDetector.rectangleColliedWithRectangles(this.bus, this.obstacles) ||
       this.collisionDetector.isRectangleOutOfRectangle(this.bus, this.mapVertices)) return "YOU CRASHED";
 
-    if (this.collisionDetector.isRectangleInRectangle(this.bus.vertices, this.parkingBox.vertices) &&
-      this.bus.velocity === 0) return "YOU WON!";
-
-    // Rendering
-    this.renderer.renderGame(this);
+    if (this.collisionDetector.isRectangleInRectangle(this.bus, this.parkingBox) &&
+      Math.floor(this.bus.velocity) === 0) return "YOU WON!";
 
     return "";
   }

@@ -5,4 +5,7 @@ const game: Game = new Game();
 
 const startGameButton: HTMLButtonElement = document.getElementById("start-game-button") as HTMLButtonElement;
 
-startGameButton.addEventListener("click", () => game.start());
+startGameButton.addEventListener("click", () => {
+  startGameButton.disabled = true;
+  game.start()
+});

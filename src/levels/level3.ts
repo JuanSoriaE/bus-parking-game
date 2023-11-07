@@ -2,11 +2,10 @@ import { LevelSettings } from "../types/main";
 
 export default {
   mapVertices: [
-    {x: 0, y: 0}, {x: 5000, y: 0}, {x: 5000, y: 5000}, {x: 0, y: 5000}
+    {x: 0, y: 0}, {x: 800, y: 0}, {x: 800, y: 800}, {x: 0, y: 800}
   ],
-  mapBackgroundTextureSrcId: "gridImg",
   bus: {
-    position: {x: 250, y: 250},
+    position: {x: 700, y: 150},
     w: 52, h: 263.5,
     textureSrcId: "bus-volvo-9800",
     frontwheelsOverhang: 41.8,
@@ -14,14 +13,27 @@ export default {
   },
   obstacles: [
     {
-      position: {x: 450, y: 250},
+      position: {x: 0, y: 800},
+      w: 700, h: 700,
+      angle: 1 / 4,
+    },
+    {
+      position: {x: 280, y: 370},
       w: 52, h: 274,
+      angle: 5 / 4,
       textureSrcId: "bus-irizar-i6",
+    },
+    {
+      position: {x: 430, y: 520},
+      w: 52, h: 263.5,
+      angle: 5 / 4,
+      textureSrcId: "bus-volvo-9800",
     },
   ],
   parkingBox: {
-    position: {x: 250, y: 500},
+    position: {x: 360, y: 440},
     w: 80, h: 300,
+    angle: 1 / 4,
     textureSrcId: "parkingBoxImg",
   },
   audios: [
