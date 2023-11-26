@@ -81,6 +81,36 @@ export default class Game {
     this.audioManager.setAudios(levelSettings.audios ?? []);
   }
 
+  renderBusLights() {
+    const busInsideAngle: number = Math.atan2(this.bus.width / 4, this.bus.height);
+
+    if (!this.bus.forward) {
+      this.renderer.renderLight(
+        this.bus.position.x + (this.bus.height / 2) * Math.cos((1 + this.bus.headingAngle - busInsideAngle) * Math.PI),
+        this.bus.position.y + (this.bus.height / 2) * Math.sin((1 + this.bus.headingAngle - busInsideAngle) * Math.PI),
+        this.bus.angle, 20, "#ffffff55", "#ffffff00", (17 / 18)
+      );
+      this.renderer.renderLight(
+        this.bus.position.x + (this.bus.height / 2) * Math.cos((1 + this.bus.headingAngle + busInsideAngle) * Math.PI),
+        this.bus.position.y + (this.bus.height / 2) * Math.sin((1 + this.bus.headingAngle + busInsideAngle) * Math.PI),
+        this.bus.angle, -20, "#ffffff55", "#ffffff00", -(17 / 18)
+      );
+    }
+
+    if (this.bus.braking) {
+      this.renderer.renderLight(
+        this.bus.position.x + (this.bus.height / 2) * Math.cos((1 + this.bus.headingAngle - busInsideAngle) * Math.PI),
+        this.bus.position.y + (this.bus.height / 2) * Math.sin((1 + this.bus.headingAngle - busInsideAngle) * Math.PI),
+        this.bus.angle, 50, "#ff000066", "#ff000000", (5 / 6)
+      );
+      this.renderer.renderLight(
+        this.bus.position.x + (this.bus.height / 2) * Math.cos((1 + this.bus.headingAngle + busInsideAngle) * Math.PI),
+        this.bus.position.y + (this.bus.height / 2) * Math.sin((1 + this.bus.headingAngle + busInsideAngle) * Math.PI),
+        this.bus.angle, -50, "#ff000066", "#ff000000", -(5 / 6)
+      );
+    }
+  }
+
   renderGame() {
     this.renderer.origin.x = this.renderer.canvas.width / 2 - this.bus.position.x;
     this.renderer.origin.y = this.renderer.canvas.height / 2 - this.bus.position.y;
@@ -91,11 +121,11 @@ export default class Game {
 
     this.renderer.renderGameObject(this.parkingBox);
 
+    this.renderer.renderGameObject(this.bus);
+    this.renderBusLights();
+
     for (const obstacle of this.obstacles)
       this.renderer.renderGameObject(obstacle, "#6e3000");
-
-    this.renderer.renderGameObject(this.bus);
-    this.renderer.renderBusLights(this.bus);
   }
 
   start() {

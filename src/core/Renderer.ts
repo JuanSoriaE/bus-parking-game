@@ -1,5 +1,4 @@
 import { Vec2d } from "../types/main";
-import Bus from "./Bus";
 import GameObject from "./GameObject";
 
 export default class Renderer {
@@ -61,61 +60,25 @@ export default class Renderer {
     this.ctx.restore();
   }
 
-  renderLight(x: number, y: number, radius: number, fromColor: string, toColor: string, angle: number) {
-    const radialGradient: CanvasGradient = this.ctx.createRadialGradient(x, y, 0, x, y, Math.abs(radius));
+  renderLight(x: number, y: number, angle: number, radius: number, fromColor: string, toColor: string, lightAngle: number) {
+    this.ctx.save();
+    this.ctx.translate(x + this.origin.x, y + this.origin.y);
+    this.ctx.rotate(angle * Math.PI);
+
+    const radialGradient: CanvasGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, Math.abs(radius));
     radialGradient.addColorStop(0, fromColor);
-    radialGradient.addColorStop(1, toColor); // Opacity 0
+    radialGradient.addColorStop(1, toColor);
     this.ctx.fillStyle = radialGradient;
 
     this.ctx.beginPath();
-    this.ctx.moveTo(x, y);
-    this.ctx.lineTo(x + radius, y);
-    this.ctx.lineTo(x + radius, y + radius * (angle < 0 ? -1 : 1));
-    this.ctx.lineTo(x + radius * Math.cos(angle), y + radius * (angle < 0 ? -1 : 1));
-    this.ctx.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
-    this.ctx.lineTo(x, y);
+    this.ctx.moveTo(0, 0);
+    this.ctx.lineTo(radius, 0);
+    this.ctx.lineTo(radius, radius * (lightAngle * Math.PI < 0 ? -1 : 1));
+    this.ctx.lineTo(radius * Math.cos(lightAngle * Math.PI), radius * (lightAngle * Math.PI < 0 ? -1 : 1));
+    this.ctx.lineTo(radius * Math.cos(lightAngle * Math.PI), radius * Math.sin(lightAngle * Math.PI));
+    this.ctx.lineTo(0, 0);
 
     this.ctx.fill();
-  }
-
-  renderBusLights(bus: Bus) {
-    const xOffset: number = !bus.isRotated() ? bus.position.x + this.origin.x : 0,
-          yOffset: number = !bus.isRotated() ? bus.position.y + this.origin.y : 0;
-
-    if (bus.isRotated()) {
-      this.ctx.save();
-      this.ctx.translate(bus.position.x + this.origin.x, bus.position.y + this.origin.y);
-      this.ctx.rotate(bus.angle * Math.PI)
-    }
-
-    // Reverse lights    
-    if (!bus.forward) {
-      this.renderLight(
-        - bus.width / 2 + 5 + xOffset, bus.height / 2 + yOffset, 20,
-        "#ffffff55", "#ffffff00",
-        (17 / 18) * Math.PI
-      );
-      this.renderLight(
-        bus.width / 2 - 5 + xOffset, bus.height / 2 + yOffset, - 20,
-        "#ffffff55", "#ffffff00",
-        - (17 / 18) * Math.PI
-      );
-    }
-    
-    // Bus brake lights
-    if (bus.braking) {
-      this.renderLight(
-        - bus.width / 2 + 2 + xOffset, bus.height / 2 + yOffset, 50,
-        "#ff000066", "#ff000000",
-        (5 / 6) * Math.PI
-      );
-      this.renderLight(
-        bus.width / 2 - 2, bus.height / 2, - 50,
-        "#ff000066", "#ff000000",
-        - (5 / 6) * Math.PI
-      );
-    }
-
     this.ctx.restore();
   }
 
